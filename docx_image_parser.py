@@ -7,6 +7,8 @@ import numpy as np
 import fitz
 import tempfile
 from pathlib import Path
+import tkinter as tk
+from tkinter import filedialog
 
 SUPPORTED_LANGS = {
     'Русский': 'rus',
@@ -183,8 +185,25 @@ def process_document(file_path, output_folder, lang='rus'):
         raise Exception(f"Ошибка при обработке документа: {str(e)}")
 
 if __name__ == "__main__":
-    # Пример использования
-    docx_path = "Задание №2 (12 пар).docx"  # Замените на путь к вашему DOCX файлу
-    output_folder = "extracted_images"  # Папка для сохранения результатов
+    # Создаем корневое окно Tkinter (оно будет скрыто)
+    root = tk.Tk()
+    root.withdraw()
+
+    # Открываем диалог выбора файла
+    file_path = filedialog.askopenfilename(
+        title="Выберите DOCX файл",
+        filetypes=[("Word documents", "*.docx"), ("All files", "*.*")]
+    )
     
-    doc_text, results, results_file = process_document(docx_path, output_folder) 
+    if not file_path:
+        print("Файл не выбран")
+        exit()
+        
+    # Создаем папку для сохранения результатов
+    output_folder = "extracted_images"
+    
+    try:
+        doc_text, results, results_file = process_document(file_path, output_folder)
+        print(f"Обработка завершена. Результаты сохранены в папку: {output_folder}")
+    except Exception as e:
+        print(f"Произошла ошибка: {str(e)}") 
